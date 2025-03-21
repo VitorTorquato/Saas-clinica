@@ -1,10 +1,6 @@
 import {
   Card,
   CardContent,
-  CardDescription,
-  CardFooter,
-  CardHeader,
-  CardTitle,
 } from "@/components/ui/card";
 import fotoImg from "../../../../../public/images/foto1.png";
 
