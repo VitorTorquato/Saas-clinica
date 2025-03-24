@@ -16,6 +16,7 @@ model User {
   address       String? @default("")
   phone         String? @default("")
   status        Boolean @default(true)
+  time_table    String[] @default([])
   timezone      String?
   stripe_customer_id  String?
 
