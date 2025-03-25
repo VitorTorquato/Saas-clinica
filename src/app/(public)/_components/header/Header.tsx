@@ -50,7 +50,7 @@ export function Header() {
       ) : session ? (
         <Link 
         className="flex items-center justify-center font-light gap-2 bg-zinc-900 text-white py-1 rounded-md px-4"
-        href="/dasboard">
+        href="/dashboard">
           Painel 
         </Link>
       ) : (
