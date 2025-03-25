@@ -1,5 +1,7 @@
 import getSession from "@/lib/getSession";
 import {redirect} from 'next/navigation'
+import { getUserData } from "./_data-access/get-info-user";
+import { ProfileContent } from "./_components/Profile";
 
 export default  async function Profile() {
 
@@ -9,11 +11,15 @@ export default  async function Profile() {
       redirect("/")
     }
 
+    const user = await getUserData({user_id: session.user?.id})
     
+    if(!user){
+      redirect("/")
+    }
 
   return (
     <section>
-        <h1>Profile</h1>
+        <ProfileContent/>
     </section>
   )
 }

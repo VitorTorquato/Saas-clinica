@@ -7,6 +7,7 @@ export default async function Plans() {
       if(!session){
         redirect("/")
       }
+      
   return (
     <section>
         <h1>Planos</h1>
