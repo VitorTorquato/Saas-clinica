@@ -59,6 +59,7 @@ type UserWithSubscription = Prisma.UserGetPayload<{
 interface ProfileContentProps{
   user: UserWithSubscription
 }
+
 export function ProfileContent({user}:ProfileContentProps) {
 
     const form = useProfileForm({
