@@ -43,6 +43,12 @@ import { useState } from 'react';
 import { cn } from '@/lib/utils';
  
 import {Prisma} from '@prisma/client';
+import { updateProfile } from '../_actions/update-profile';
+
+import { toast } from "sonner";
+import {formatPhone, extractPhoneNumber }  from '@/utils/formatPhone';
+
+
 
 type UserWithSubscription = Prisma.UserGetPayload<{
   include:{
@@ -98,12 +104,25 @@ export function ProfileContent({user}:ProfileContentProps) {
     );
 
     async function onsubmit(values: ProfileFormData){
-        const profileData = {
-          ...values,
-          times: selectedHours
+    
+        const extractPhone = extractPhoneNumber(values.phone || "")
+
+        const response = await updateProfile({
+          name: values.name,
+          address: values.address,
+          phone: extractPhone,
+          status: values.status === 'active' ? true : false,
+          timeZone: values.timeZone,
+          times: selectedHours || []
+        });
+
+        if(response.error){
+          toast(response.error , {closeButton:true})
+          return
         }
 
-        console.log(profileData);
+        toast(response.data)
+
     }
 
   return (
@@ -119,8 +138,8 @@ export function ProfileContent({user}:ProfileContentProps) {
                   <div className="flex justify-center">
                     <div className='relative h-40 w-40 rounded-full overflow-hidden bg-gray-200'>
                       <Image
-                      src={imgUser}
-                      alt='imagem ilustrativa'
+                      src={user.image ? user.image : imgUser}
+                      alt='foto da clinica'
                       fill
                       className='object-cover'
                       />
@@ -170,7 +189,11 @@ export function ProfileContent({user}:ProfileContentProps) {
                         <FormControl>
                           <Input
                           {...field}
-                          placeholder='Digite o seu telefone...'
+                          placeholder='(67) 99123-4562'
+                          onChange={(e) => {
+                            const formattedValue = formatPhone(e.target.value)
+                            field.onChange(formattedValue)
+                          }}
                           />
                         </FormControl>
                         <FormMessage/>
