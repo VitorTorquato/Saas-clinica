@@ -8,7 +8,7 @@ export async function ServiceContent({user_id}:ServiceContentProps){
 
     const services = await getAllServices({user_id:user_id});
 
-    console.log(services)
+
   
   return (
     <div>

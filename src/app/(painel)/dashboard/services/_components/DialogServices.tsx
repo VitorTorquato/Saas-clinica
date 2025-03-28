@@ -5,7 +5,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import { DialogServiceFormData, useDialogServiceForm } from "./Dialog-service-form";
+import { DialogServiceFormData, useDialogServiceForm } from "./dialog-service-form";
 
 import {
   Form,
@@ -18,6 +18,8 @@ import {
 
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
+import { convertRealToCents } from "@/utils/convertCurrency";
+
 // import {
 //   Select,
 //   SelectContent,
@@ -31,16 +33,19 @@ export default function DialogServices() {
 
   function onsubmit(values:DialogServiceFormData){
 
+    const priceInCents = convertRealToCents(values.price)
+
+    console.log(priceInCents)
+
 
   }
 
-  // - valor em centavos = valor em reais * 100
-  // - valor em reais = valor em centavos / 100
+ 
 
   function formatCurrency(event: React.ChangeEvent<HTMLInputElement>){
         let {value} = event.target;
 
-        value = value.replace(/\d/g, '');
+        value = value.replace(/\D/g, ""); 
 
         if(value){
             value = (parseInt(value ,10) / 100).toFixed(2);
@@ -52,6 +57,7 @@ export default function DialogServices() {
         event.target.value = value;
         form.setValue("price" , value);
   }
+
   return (
     <>
       <DialogHeader>
@@ -106,7 +112,7 @@ export default function DialogServices() {
                     <div className="grid grid-cols-2 gap-3">
                     <FormField
                     control={form.control}
-                    name="minutes"
+                    name="hours"
                     render={({field}) => (
                         <FormItem className="my-2">
                             <FormLabel className="font-bold">Horas</FormLabel>
