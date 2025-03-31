@@ -1,5 +1,6 @@
 "use client";
 
+import { useState } from "react";
 import {
   DialogDescription,
   DialogHeader,
@@ -19,25 +20,51 @@ import {
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { convertRealToCents } from "@/utils/convertCurrency";
+import { CreatNewService } from "../_actions/create-service";
+import { toast } from "sonner";
 
-// import {
-//   Select,
-//   SelectContent,
-//   SelectItem,
-//   SelectTrigger,
-//   SelectValue,
-// } from "@/components/ui/select";
+interface DialogServiceProps{
+    closeModal: () => void;
+}
 
-export default function DialogServices() {
-  const form = useDialogServiceForm();
+export default function DialogServices({closeModal}: DialogServiceProps) {
 
-  function onsubmit(values:DialogServiceFormData){
+    const [loading, setLoading] = useState(false);
 
+    const form = useDialogServiceForm();
+    
+  async function onsubmit(values:DialogServiceFormData){
+    setLoading(true);
     const priceInCents = convertRealToCents(values.price)
+    const hours = parseInt(values.hours) || 0;
+    const minutes = parseInt(values.minutes) || 0;
 
-    console.log(priceInCents)
+    //converter as horas em minutos para duracao total em minutos
 
+    const duration = (hours * 60) + minutes;
 
+    const response = await CreatNewService({
+        name: values.name,
+        price: priceInCents,
+        duration: duration,
+    })
+    
+    setLoading(false);
+
+    if(response.error){
+        toast(response.error)
+        return;
+    }
+
+    toast.success("Servico cadastrado com sucesso");
+    handleCloseModal();
+    
+
+  }
+
+  function handleCloseModal(){
+    form.reset();
+    closeModal();
   }
 
  
@@ -153,8 +180,9 @@ export default function DialogServices() {
                 <Button
                 type="submit"
                 className="w-full font-semibold text-white"
+                disabled={loading}
                 >
-                    Adicionar Servico
+                   {loading ? "Cadastrando..." : "Adicionar servico"}
                 </Button>
             </form>
         </Form>

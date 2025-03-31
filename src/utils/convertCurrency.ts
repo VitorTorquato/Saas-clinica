@@ -1,3 +1,4 @@
+//js docs:
 /**
  * Converte um valor monetario em reais (BRL) para centavos.
  * @param {string} amount - O valor monetario em reais (BRL) a ser convertido
