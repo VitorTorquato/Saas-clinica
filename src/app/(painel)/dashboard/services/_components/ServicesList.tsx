@@ -17,6 +17,8 @@ import { Pencil, Plus, X } from "lucide-react";
 import DialogServices from "./DialogServices";
 import { Service } from "@prisma/client";
 import {formatCurrency} from '@/utils/fromatCurrency'
+import { deleteService } from "../_actions/delete-service";
+import { toast } from "sonner";
 
 
 interface ServiceListProps{
@@ -26,6 +28,23 @@ interface ServiceListProps{
 export function ServicesList({services}:ServiceListProps) {
 
     const [isDialogOpen,setIsDialogOpen] = useState(false);
+    const [editingService, setEditingService] = useState<null | Service>(null);
+
+    async function handleDeleteService(id:string){
+           const response = await deleteService({serviceId: id})
+
+           if(response.error){
+            toast(response.error)
+            return
+           }
+
+           toast.success(response.data)
+    }
+
+    async function handleEditService(service: Service){
+            setEditingService(service);
+            setIsDialogOpen(true);
+    }
 
     return (
         <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
@@ -44,6 +63,13 @@ export function ServicesList({services}:ServiceListProps) {
                             closeModal={() => {
                                 setIsDialogOpen(false)
                             }}
+                            serviceId={editingService ? editingService.id : undefined}
+                            initialValues={editingService ? {
+                                name: editingService.name,
+                                price: (editingService.price / 100).toFixed(2).replace("." , ","),
+                                hours: Math.floor(editingService.duration / 60).toString(),
+                                minutes: (editingService.duration % 60).toString()
+                            } : undefined}
                             />
                         </DialogContent>
                     </CardHeader>
@@ -62,11 +88,15 @@ export function ServicesList({services}:ServiceListProps) {
 
 
                                     <div>
-                                        <Button variant="ghost" size="icon">
+                                        <Button 
+                                        onClick={() => handleEditService(service)}
+                                        variant="ghost" size="icon">
                                             <Pencil className="w-4 h-4"/>
                                         </Button>
 
-                                        <Button variant="ghost" size="icon">
+                                        <Button
+                                        onClick={() => handleDeleteService(service.id)}
+                                        variant="ghost" size="icon">
                                             <X className="w-4 h-4"/>
                                         </Button>
                                     </div>

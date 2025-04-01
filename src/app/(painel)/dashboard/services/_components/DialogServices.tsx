@@ -24,14 +24,21 @@ import { CreatNewService } from "../_actions/create-service";
 import { toast } from "sonner";
 
 interface DialogServiceProps{
+    serviceId?: string;
+    initialValues? : {
+        name: string;
+        price: string;
+        hours: string;
+        minutes: string;
+    }
     closeModal: () => void;
 }
 
-export default function DialogServices({closeModal}: DialogServiceProps) {
+export default function DialogServices({closeModal , serviceId, initialValues}: DialogServiceProps) {
 
     const [loading, setLoading] = useState(false);
 
-    const form = useDialogServiceForm();
+    const form = useDialogServiceForm({initialValues : initialValues});
     
   async function onsubmit(values:DialogServiceFormData){
     setLoading(true);
