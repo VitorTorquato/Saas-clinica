@@ -1,6 +1,9 @@
 "use client"
 import imgUser from '../../../../../../public/images/foto1.png';
 
+import {signOut , useSession} from 'next-auth/react';
+import { useRouter } from 'next/navigation';
+
 import { ProfileFormData, useProfileForm } from "./profile-form" 
 import { 
     Card,
@@ -61,6 +64,8 @@ interface ProfileContentProps{
 }
 
 export function ProfileContent({user}:ProfileContentProps) {
+    const router = useRouter();
+    const {update} = useSession();
 
     const form = useProfileForm({
       name: user.name,
@@ -85,6 +90,12 @@ export function ProfileContent({user}:ProfileContentProps) {
       }
 
       return hours;
+    }
+
+    async function handleLogOut(){
+      await signOut();
+      await update();
+      router.replace("/");
     }
 
     function toggleHour(hour:string){
@@ -321,6 +332,15 @@ export function ProfileContent({user}:ProfileContentProps) {
           </Card>
         </form>
       </Form>
+
+      <section className='mt-4'>
+        <Button
+        variant="destructive"
+        onClick={handleLogOut}
+        >
+          Sair da conta
+        </Button>
+      </section>
     </div>
   )
 }

@@ -22,6 +22,7 @@ import { Button } from "@/components/ui/button";
 import { convertRealToCents } from "@/utils/convertCurrency";
 import { CreatNewService } from "../_actions/create-service";
 import { toast } from "sonner";
+import { updateService } from "../_actions/edit-services";
 
 interface DialogServiceProps{
     serviceId?: string;
@@ -50,6 +51,17 @@ export default function DialogServices({closeModal , serviceId, initialValues}: 
 
     const duration = (hours * 60) + minutes;
 
+    if(serviceId){
+        await handleEditService({
+            serviceId: serviceId,
+            name: values.name,
+            priceInCents: priceInCents,
+            duration: duration,
+        })
+        
+        return;
+    }
+
     const response = await CreatNewService({
         name: values.name,
         price: priceInCents,
@@ -66,6 +78,33 @@ export default function DialogServices({closeModal , serviceId, initialValues}: 
     toast.success("Servico cadastrado com sucesso");
     handleCloseModal();
     
+
+  }
+
+  async function handleEditService({serviceId , name , priceInCents , duration} : {
+    serviceId: string ,
+    name: string ,
+    priceInCents : number,
+    duration: number;
+  }){
+
+    const response = await updateService({
+        serviceId: serviceId,
+        name: name,
+        price: priceInCents,
+        duration: duration
+    });
+
+    setLoading(false)
+
+    if(response.error){
+        toast(response.data)
+    }
+
+    toast.success(response.data);
+    handleCloseModal();
+
+
 
   }
 
@@ -189,7 +228,7 @@ export default function DialogServices({closeModal , serviceId, initialValues}: 
                 className="w-full font-semibold text-white"
                 disabled={loading}
                 >
-                   {loading ? "Cadastrando..." : "Adicionar servico"}
+                  {loading ? "Carregando" : `${serviceId ? "Atualizar Servico" : "Adicionar Servico"}`}
                 </Button>
             </form>
         </Form>
