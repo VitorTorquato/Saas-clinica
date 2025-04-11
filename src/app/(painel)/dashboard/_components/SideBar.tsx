@@ -174,7 +174,7 @@ export function SideBarDashboard({ children }: { children: React.ReactNode }) {
 
               <h1 className="text-base md:text-lg font-semibold">
                 Menu OdontoPro
-              </h1>
+              </h1>        
             </div>
 
             <SheetContent side="right" className="sm:max-w-xs text-black">
