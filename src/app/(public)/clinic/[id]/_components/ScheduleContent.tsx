@@ -31,6 +31,7 @@ import { Button } from "@/components/ui/button";
 
 import { formatPhone } from "@/utils/formatPhone";
 import { DateTimerPicker } from "./date-picker";
+import ScheduleTimeList from "./schedule-time-list";
 
 type UserwithServiceAndsubscription = Prisma.UserGetPayload<{
   include: {
@@ -43,7 +44,7 @@ interface ScheduleContentProps {
   clinic: UserwithServiceAndsubscription;
 }
 
-interface Timeslot{
+export interface Timeslot{
     time: string;
     available: boolean
 }
@@ -227,7 +228,7 @@ export function ScheduleContent({ clinic }: ScheduleContentProps) {
               name="serviceId"
               render={({ field }) => (
                 <FormItem className="">
-                  <FormLabel className="font-semibold">Selecione o servico</FormLabel>
+                  <FormLabel className="font-bold">Selecione o servico</FormLabel>
                   <FormControl className="w-full">
                     <Select
                       onValueChange={field.onChange}
@@ -247,6 +248,33 @@ export function ScheduleContent({ clinic }: ScheduleContentProps) {
                 </FormItem>
               )}
             />
+
+              {selectedServiceId && (
+                <div className="space-y-2">
+                  <Label className="font-bold">Horarios disponiveis</Label>
+                  <div className="bg-gray-100 p-4 rounded-lg">
+
+                    {loadingSlots ? (
+                      <p>Carregando horarios</p>
+                    ) : availableTimeSlot.length === 0 ? (
+                      <p>Nenhum horario disponivel</p>
+                    ) : (
+                      <ScheduleTimeList 
+                      onSlectime={(time) => setSelectedTime(time)}
+                      clinicTimes={clinic.time_table}
+                      blockedTimes={blockedTimes}
+                      availableTimesSlots={availableTimeSlot}
+                      selecetedTime={selectedTime}
+                      selectedDate={selectedDate}
+                      requiredSlot={
+                        clinic.services.find(service => service.id === selectedServiceId) ? Math.ceil(clinic.services.find(service => service.id === selectedServiceId)!.duration / 30) : 1
+                      }
+                      />
+                    )}
+                  </div>
+                </div>
+              )}
+
                 {clinic.status ? (
                     
             <Button 
