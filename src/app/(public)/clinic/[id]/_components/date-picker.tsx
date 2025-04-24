@@ -2,9 +2,11 @@
 
 import { useState } from "react";
 import DatePicker , {registerLocale} from 'react-datepicker';
-import {ptBR} from 'date-fns/locale/pt-BR'
+import { ptBR } from 'date-fns/locale/pt-BR'
 import "react-datepicker/dist/react-datepicker.css";
+
 registerLocale("pt-BR" , ptBR)
+
 
 interface DateTimePickerProps{
     minDate?: Date;
@@ -19,6 +21,7 @@ export function DateTimerPicker({className,minDate,initialDate,onChange}: DateTi
 
     function handleChange(date: Date | null){
         if(date){
+            console.log(date)
             setStartDate(date);
             onChange(date)
         }
