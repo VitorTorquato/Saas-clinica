@@ -8,7 +8,7 @@ import Image from "next/image";
 import { Prisma } from "@prisma/client";
 import { useAppoitnmentForm, AppointmentFormData } from "./schedule-form";
 
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+
 import {
   Form,
   FormControl,
@@ -123,7 +123,14 @@ export function ScheduleContent({ clinic }: ScheduleContentProps) {
           time: time,
           available: !blocked.includes(time),
         }));
+
         setAvailableTimeSlot(finalSlots);
+
+        //verificatr se o slot atual estiver indisponivel limpamos a selecao
+        const stillAvailable = finalSlots.find((slot) => slot.time === selectedTime && slot.available)
+        if(!stillAvailable){
+          setSelectedTime("")
+        }
       });
     }
   }, [selectedDate, clinic.time_table, fetchBlockedTimes, selectedTime]);
